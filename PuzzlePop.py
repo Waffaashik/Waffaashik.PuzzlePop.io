@@ -3,7 +3,7 @@ from tkinter import ttk, Canvas, messagebox, font as tkFont
 from datetime import datetime, timedelta
 import requests
 import random
-import pygame
+import winsound
 
 class PuzzlePopApp:
     def __init__(self, master):
@@ -16,14 +16,16 @@ class PuzzlePopApp:
         self.master.option_add("*Font", custom_font)
         self.user_score = 0  # Initializing user's score
         self.timer_seconds = 15  # Initializing timer value
-        # Initialize pygame for audio
-        pygame.init()
-        self.timer_label = None
-        self.timer_id = None
 
-         # Load background music for the first page
-        pygame.mixer.music.load("C:/Users/afrin/Downloads/bagroundmusic.mp3") 
-        pygame.mixer.music.play(-1)  # Play in a loop (-1)
+        # Set the file paths for sounds
+        self.background_music_path = "C:/Users/afrin/OneDrive/Desktop/game music/bagroundmusic.wav"
+        self.correct_sound_path = "C:/Users/afrin/OneDrive/Desktop/game music/correct sound.wav"
+        self.wrong_sound_path = "C:/Users/afrin/OneDrive/Desktop/game music/wrong sound.wav"
+        
+
+        # Start playing background music
+        self.play_background_music()
+        
 
         # Creating a canvas for gradient background
         self.canvas = Canvas(master, width=460, height=640)
@@ -76,14 +78,18 @@ class PuzzlePopApp:
         # Animating the confettis
         self.animate_confetti()
     
+    def play_background_music(self):
+        winsound.PlaySound(self.background_music_path, winsound.SND_LOOP | winsound.SND_ASYNC)
+
     def play_correct_sound(self):
-        pygame.mixer.Sound("C:/Users/afrin/Downloads/correct sound.mp3").play() 
+        winsound.PlaySound(self.correct_sound_path, winsound.SND_FILENAME)
 
     def play_wrong_sound(self):
-        pygame.mixer.Sound("C:/Users/afrin/Downloads/wrong sound.mp3").play() 
+        winsound.PlaySound(self.wrong_sound_path, winsound.SND_FILENAME)
 
-    def play_quiz_complete_sound(self, file_path):
-     pygame.mixer.Sound(file_path).play()
+   
+   
+
 
     #Creating a gradient background
     def create_gradient(self, color1, color2):
@@ -296,7 +302,7 @@ class PuzzlePopApp:
             tk.Button(self.question_page, text="Next Question", command=self.show_next_question).pack()
 
         else:
-            self.play_quiz_complete_sound("C:/Users/afrin/Downloads/completed sound.mp3")
+          
             messagebox.showinfo("Game Over", f"Congratulations! You have completed the quiz.\nYour Score: {self.user_score}")
            
 
@@ -307,11 +313,13 @@ class PuzzlePopApp:
         if selected_option == correct_answer:
             self.result_label.config(text="Correct!", fg="green")
             # Increment the user_score when the answer is correct
+            self.play_correct_sound()
             self.user_score += 1
-            self.play_correct_sound() 
+            
         else:
+            self.play_wrong_sound()
             self.result_label.config(text=f"Incorrect! Correct answer: {correct_answer}", fg="red")
-            self.play_wrong_sound()  
+              
         
         # Cancel the scheduled timer event
         self.master.after_cancel(self.timer_id)
@@ -333,7 +341,9 @@ class PuzzlePopApp:
         # Show the next question
         self.show_question_page()
      else:
-        self.play_quiz_complete_sound() 
+         # Play the quiz completion sound first
+        self.play_quiz_complete_sound(self.completed_sound_path)
+
         # Display Game Over message if all questions are completed
         messagebox.showinfo("Game Over", f"Congratulations! You have completed the quiz.\nYour Score: {self.user_score}")
          
