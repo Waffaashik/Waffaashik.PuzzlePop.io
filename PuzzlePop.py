@@ -362,6 +362,7 @@ class PuzzlePopApp:
             
         }
         return categories.get(category_name, 9)  # Default to General category if not found
+    
 
     @staticmethod
     def get_difficulty_name(difficulty_level):
