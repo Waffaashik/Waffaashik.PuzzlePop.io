@@ -341,8 +341,7 @@ class PuzzlePopApp:
         # Show the next question
         self.show_question_page()
      else:
-         # Play the quiz completion sound first
-        self.play_quiz_complete_sound(self.completed_sound_path)
+
 
         # Display Game Over message if all questions are completed
         messagebox.showinfo("Game Over", f"Congratulations! You have completed the quiz.\nYour Score: {self.user_score}")
